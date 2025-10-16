@@ -45,7 +45,7 @@ graph TB
 - ✅ **Modern UI**: Beautiful, responsive interface built with Tailwind CSS
 - ✅ **Server Actions**: Next.js 15 Server Actions for seamless data mutations
 - ✅ **SQLite Database**: Lightweight, persistent storage with better-sqlite3
-- ✅ **MCP Endpoint**: AI-accessible interface for programmatic todo management (Coming in V2)
+- ✅ **MCP Endpoint**: AI-accessible interface for programmatic todo management via JSON-RPC 2.0
 - ✅ **Real-time Updates**: Automatic revalidation after data changes
 - ✅ **Type Safety**: Full TypeScript support throughout the application
 
@@ -104,18 +104,23 @@ next15-todo-mcp/
 2. **Complete a task**: Click the "Complete" button on any task
 3. **Delete a task**: Click the "Delete" button to remove a task
 
-### MCP Endpoint (Coming in V2)
+### MCP Endpoint
 
-The MCP endpoint will provide programmatic access to todo operations for AI assistants.
+The MCP endpoint provides programmatic access to todo operations for AI assistants via JSON-RPC 2.0 protocol at `/api/mcp`.
 
-**Available Tools:**
-- `ping`: Health check
-- `getTasks`: List all todos
-- `addTask`: Create a new todo
-- `completeTask`: Mark a todo as complete
-- `deleteTask`: Remove a todo
+#### Available Tools
 
-**Example Request:**
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `ping` | Health check for MCP endpoint | None |
+| `getTasks` | Retrieve all todo items | None |
+| `addTask` | Create a new todo item | `title` (string) |
+| `completeTask` | Mark a todo as completed | `id` (number) |
+| `deleteTask` | Remove a todo item | `id` (number) |
+
+#### Example Requests
+
+**1. Health Check (Ping)**
 ```bash
 curl -X POST http://localhost:3000/api/mcp \
   -H "Content-Type: application/json" \
@@ -123,10 +128,104 @@ curl -X POST http://localhost:3000/api/mcp \
     "jsonrpc": "2.0",
     "method": "tools/call",
     "params": {
-      "name": "getTasks",
+      "name": "ping",
       "arguments": {}
     },
     "id": 1
+  }'
+```
+
+**Response:**
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "✅ Pong from Next.js 15 To-Do MCP Server!"
+      }
+    ]
+  }
+}
+```
+
+**2. Get All Tasks**
+```bash
+curl -X POST http://localhost:3000/api/mcp \
+  -H "Content-Type": application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "getTasks",
+      "arguments": {}
+    },
+    "id": 2
+  }'
+```
+
+**3. Add a New Task**
+```bash
+curl -X POST http://localhost:3000/api/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "addTask",
+      "arguments": {
+        "title": "Buy groceries"
+      }
+    },
+    "id": 3
+  }'
+```
+
+**4. Complete a Task**
+```bash
+curl -X POST http://localhost:3000/api/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "completeTask",
+      "arguments": {
+        "id": 1
+      }
+    },
+    "id": 4
+  }'
+```
+
+**5. Delete a Task**
+```bash
+curl -X POST http://localhost:3000/api/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "deleteTask",
+      "arguments": {
+        "id": 1
+      }
+    },
+    "id": 5
+  }'
+```
+
+**List Available Tools:**
+```bash
+curl -X POST http://localhost:3000/api/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/list",
+    "params": {},
+    "id": 6
   }'
 ```
 
@@ -169,18 +268,20 @@ This application is deployed on DigitalOcean App Platform with:
 
 ## 📊 Development Roadmap
 
-### ✅ V1 - Basic Todo App (Current)
+### ✅ V1 - Basic Todo App (Completed)
 - Next.js 15 setup
 - Server Actions for CRUD
 - SQLite database
 - Modern UI with Tailwind
+- Deployed to DigitalOcean App Platform
 
-### 🚧 V2 - MCP Integration (Next)
-- MCP endpoint implementation
-- 5 tools for todo management
-- MCP protocol compliance
+### ✅ V2 - MCP Integration (Current)
+- MCP endpoint implementation ✅
+- 5 tools for todo management ✅
+- MCP protocol compliance (JSON-RPC 2.0) ✅
+- Comprehensive API documentation ✅
 
-### 📋 V3 - Automated Testing (Planned)
+### 📋 V3 - Automated Testing (Next)
 - Playwright test suite
 - MCP endpoint validation
 - CI/CD integration
