@@ -23,21 +23,21 @@ graph TB
     
     subgraph "Local Development"
         BROWSER[Browser Tool<br/>Manual Testing]
-        PW[Playwright<br/>Automated Tests]
+        CURL[Curl Script<br/>MCP API Tests]
     end
     
     UI -.->|Deploy| APP
     MCP -.->|Deploy| APP
     
     APP -->|Test| BROWSER
-    APP -->|Test| PW
+    APP -->|Test| CURL
     
     style UI fill:#60a5fa
     style MCP fill:#34d399
     style DB fill:#fbbf24
     style APP fill:#f472b6
     style BROWSER fill:#a78bfa
-    style PW fill:#a78bfa
+    style CURL fill:#a78bfa
 ```
 
 ## ✨ Features
@@ -231,21 +231,48 @@ curl -X POST http://localhost:3000/api/mcp \
 
 ## 🧪 Testing
 
-### Manual Testing (Browser Tool)
-During development, the application is manually tested using browser automation tools.
+### Manual Testing (Browser UI)
+Open [http://localhost:3000](http://localhost:3000) in your browser to interact with the web UI.
 
-### Automated Testing (Playwright - V3)
-Playwright tests will be added in V3 to validate the MCP endpoint:
+### Automated Testing (Curl - V3)
 
+A comprehensive curl-based test script validates the MCP endpoint against all 5 tools and JSON-RPC 2.0 protocol compliance:
+
+**Run tests locally:**
 ```bash
-# Run tests locally
-npx playwright test
+# Start dev server in one terminal
+npm run dev
 
-# Run tests in UI mode
-npx playwright test --ui
+# In another terminal, run tests
+./tests/mcp-api.sh
 
-# Run tests against production
-npx playwright test --config=playwright.config.ts
+# Or specify a different base URL
+./tests/mcp-api.sh https://your-production-url.com
+```
+
+**Test Coverage:**
+- ✅ List all available tools (`tools/list`)
+- ✅ Verify all 5 tools exist (ping, getTasks, addTask, completeTask, deleteTask)
+- ✅ Ping tool (health check)
+- ✅ Get all tasks
+- ✅ Add new task
+- ✅ Add task with empty title (error handling)
+- ✅ Complete task
+- ✅ Delete task
+- ✅ Invalid tool name (error handling)
+- ✅ JSON-RPC 2.0 format compliance
+- ✅ Concurrent request handling
+
+**Test Results Example:**
+```
+==========================================
+MCP Endpoint Test Suite
+==========================================
+Passed: 12
+Failed: 0
+Total: 12
+
+✓ All tests passed!
 ```
 
 ## 🚢 Deployment
@@ -282,9 +309,10 @@ This application is deployed on DigitalOcean App Platform with:
 - Comprehensive API documentation ✅
 
 ### 📋 V3 - Automated Testing (Next)
-- Playwright test suite
-- MCP endpoint validation
-- CI/CD integration
+- Curl-based MCP endpoint test script
+- JSON-RPC 2.0 protocol validation
+- Integration testing across all tools
+- Test coverage: 12 comprehensive tests
 
 ## 🛠️ Tech Stack
 
@@ -292,8 +320,8 @@ This application is deployed on DigitalOcean App Platform with:
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Database**: [SQLite](https://www.sqlite.org/) with [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **MCP**: [mcp-handler](https://www.npmjs.com/package/mcp-handler) + [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk)
-- **Testing**: [Playwright](https://playwright.dev/)
+- **MCP Protocol**: JSON-RPC 2.0 implementation
+- **Testing**: Curl-based API tests (shell script)
 - **Deployment**: [DigitalOcean App Platform](https://www.digitalocean.com/products/app-platform)
 
 ## 📝 License
