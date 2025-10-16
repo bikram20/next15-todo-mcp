@@ -91,7 +91,7 @@ next15-todo-mcp/
 ├── lib/
 │   └── db.ts                 # SQLite database setup
 ├── tests/
-│   └── mcp.spec.ts           # Playwright MCP tests (V3)
+│   └── mcp-api.sh            # Curl-based MCP endpoint tests (V3)
 ├── todos.db                  # SQLite database file
 └── README.md
 ```
