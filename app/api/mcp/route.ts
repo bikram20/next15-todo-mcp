@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTodos, addTodo, completeTodo, deleteTodo } from "@/app/actions/todos";
 
 // Helper function to create MCP responses
-function toolResponse(content, isError = false) {
+function toolResponse(content: string | Array<{type: string; text: string}>, isError = false) {
   return {
     content: Array.isArray(content) ? content : [{ type: "text", text: content }],
     ...(isError && { isError: true }),
@@ -10,7 +10,7 @@ function toolResponse(content, isError = false) {
 }
 
 // Define tools
-const tools = {
+const tools: Record<string, any> = {
   ping: {
     name: "ping",
     description: "Health check for MCP endpoint - returns a confirmation message",
@@ -57,7 +57,7 @@ const tools = {
 };
 
 // Handle tool calls
-async function callTool(name, args) {
+async function callTool(name: string, args: Record<string, any>) {
   switch (name) {
     case "ping":
       return toolResponse("✅ Pong from Next.js 15 To-Do MCP Server!");
@@ -150,9 +150,9 @@ async function callTool(name, args) {
 }
 
 // MCP request handler
-async function handleMcpRequest(req) {
+async function handleMcpRequest(req: NextRequest) {
   try {
-    const body = await req.json();
+    const body = await req.json() as any;
     const { jsonrpc = "2.0", method, params = {}, id } = body;
 
     // Handle tools/list
