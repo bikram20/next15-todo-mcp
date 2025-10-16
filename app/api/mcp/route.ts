@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { getTodos, addTodo, completeTodo, deleteTodo } from "@/app/actions/todos";
 
 // Helper function to create MCP responses
